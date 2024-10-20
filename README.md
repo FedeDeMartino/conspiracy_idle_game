@@ -1,18 +1,11 @@
-Here's a `README.md` for your project based on the provided file structure:
-
----
-
 # Conspiracy Idle Game
+
+<img width="795" alt="image" src="https://github.com/user-attachments/assets/aadc0d1c-565f-4d8c-b748-b93c31ccdaf1">
+
 
 Welcome to **Conspiracy Idle Game**, a Gosu-based idle game where you explore and unlock various conspiracy theories, gather followers, and unveil wild new conspiracies! The game features a progression system where your followers grow automatically as you unlock more conspiracies. Can you uncover all the hidden truths?
 
-## Table of Contents
-
-- [Installation](#installation)
-- [How to Play](#how-to-play)
-- [File Structure](#file-structure)
-- [Contributing](#contributing)
-- [License](#license)
+<img width="793" alt="image" src="https://github.com/user-attachments/assets/9e55da52-70cb-4d6b-b24b-1f06ae9dfa78">
 
 ## Installation
 
@@ -51,6 +44,9 @@ In **Conspiracy Idle Game**, you start by recruiting followers for the first con
 
 As your followers grow, auto-generation of followers will begin, allowing you to gather even more followers without clicking.
 By buying new conspiracies the modifier for the auto-generation of followers will increase by 1 for every new conspiracy.
+
+<img width="774" alt="image" src="https://github.com/user-attachments/assets/745e8f3b-c194-4672-92f2-e10c2cbe079e">
+
 
 ### Goals:
 
