@@ -1,0 +1,16 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    gosu (1.4.6)
+
+PLATFORMS
+  arm64-darwin-23
+
+DEPENDENCIES
+  gosu
+
+RUBY VERSION
+   ruby 3.1.2p20
+
+BUNDLED WITH
+   2.3.24
