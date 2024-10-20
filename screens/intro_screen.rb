@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'gosu'
-require 'pry'
 require_relative '../services/file_reader'
 require_relative 'base_screen'
 require_relative 'game_screen'

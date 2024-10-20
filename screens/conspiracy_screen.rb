@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'gosu'
 require_relative 'intro_screen'
 
 class ConspiracyScreen < Gosu::Window

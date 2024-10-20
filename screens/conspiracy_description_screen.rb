@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'gosu'
 require_relative '../services/file_reader'
 
 class ConspiracyDescriptionScreen < BaseScreen

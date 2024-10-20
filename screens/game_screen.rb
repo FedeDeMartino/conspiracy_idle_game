@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'gosu'
 require_relative 'base_screen'
 require_relative 'intro_screen'
 require_relative 'conspiracy_description_screen'
