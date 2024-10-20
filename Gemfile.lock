@@ -1,13 +1,28 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    diff-lcs (1.5.1)
     gosu (1.4.6)
+    rspec (3.13.0)
+      rspec-core (~> 3.13.0)
+      rspec-expectations (~> 3.13.0)
+      rspec-mocks (~> 3.13.0)
+    rspec-core (3.13.0)
+      rspec-support (~> 3.13.0)
+    rspec-expectations (3.13.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-mocks (3.13.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-support (3.13.1)
 
 PLATFORMS
   arm64-darwin-23
 
 DEPENDENCIES
   gosu
+  rspec
 
 RUBY VERSION
    ruby 3.1.2p20

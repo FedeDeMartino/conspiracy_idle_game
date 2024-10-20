@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../services/file_reader'
+require_relative 'base_screen'
 
 class ConspiracyDescriptionScreen < BaseScreen
   def initialize(window, conspiracy, game_state)

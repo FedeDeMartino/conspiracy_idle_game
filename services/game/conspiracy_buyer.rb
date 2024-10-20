@@ -16,7 +16,8 @@ module Game
         return if conspiracy.nil? || not_enough_donations?(conspiracy, game_screen)
 
         game_screen.active_conspiracies << Conspiracy.new(**conspiracy)
-        game_screen.window.current_screen = ConspiracyDescriptionScreen.new(game_screen.window, conspiracy[:name], game_screen)
+        game_screen.window.current_screen = ConspiracyDescriptionScreen.new(game_screen.window, conspiracy[:name],
+                                                                            game_screen)
       end
 
       private
