@@ -33,8 +33,9 @@ module Game
 
       def draw_footer
         draw_text("(B) to buy a new conspiracy with the follower's donations", 100, 520)
-        draw_text('!Left mouse click anywhere to gain followers!', 100, 540)
-        draw_text('(ESC) To restart game', 100, 560)
+        draw_text("(U) to buy a new upgrade with the follower's donations", 100, 540)
+        draw_text('!Left mouse click anywhere to gain followers!', 100, 560)
+        draw_text('(ESC) To restart game', 100, 580)
       end
 
       def draw_text(text, coordinate_x, coordinate_y, alpha = 255)

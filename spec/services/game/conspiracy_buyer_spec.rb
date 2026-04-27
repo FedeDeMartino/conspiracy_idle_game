@@ -40,8 +40,7 @@ RSpec.describe Game::ConspiracyBuyer do
       end
 
       it 'triggers a warning message' do
-        expect(Game::ConspiracyBuyer).to receive(:trigger_warning).with('Not enough donations to buy next conspiracy!',
-                                                                        game_screen)
+        expect(Game::ConspiracyBuyer).to receive(:trigger_warning).with('Not enough donations to buy next conspiracy!', game_screen)
         Game::ConspiracyBuyer.buy_conspiracy(game_screen)
       end
     end

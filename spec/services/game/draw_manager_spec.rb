@@ -60,9 +60,11 @@ RSpec.describe Game::DrawManager do
       expect(Game::DrawManager::FONT).to receive(:draw_text).with(
         '(B) to buy a new conspiracy with the follower\'s donations', 100, 520, 1, 1.0, 1.0, 0xFFFFFFFF
       )
-      expect(Game::DrawManager::FONT).to receive(:draw_text).with('!Left mouse click anywhere to gain followers!', 100,
+      expect(Game::DrawManager::FONT).to receive(:draw_text).with("(U) to buy a new upgrade with the follower's donations", 100,
                                                                   540, 1, 1.0, 1.0, 0xFFFFFFFF)
-      expect(Game::DrawManager::FONT).to receive(:draw_text).with('(ESC) To restart game', 100, 560, 1, 1.0, 1.0,
+      expect(Game::DrawManager::FONT).to receive(:draw_text).with('!Left mouse click anywhere to gain followers!', 100,
+                                                                  560, 1, 1.0, 1.0, 0xFFFFFFFF)
+      expect(Game::DrawManager::FONT).to receive(:draw_text).with('(ESC) To restart game', 100, 580, 1, 1.0, 1.0,
                                                                   0xFFFFFFFF)
 
       Game::DrawManager.send(:draw_footer)

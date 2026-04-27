@@ -3,11 +3,13 @@
 require_relative 'base_screen'
 require_relative 'intro_screen'
 require_relative 'conspiracy_description_screen'
+require_relative 'upgrade_description_screen'
 require_relative '../models/conspiracy'
 require_relative '../fixtures/follower_names'
 require_relative '../services/game/draw_manager'
 require_relative '../services/game/update_manager'
 require_relative '../services/game/conspiracy_buyer'
+require_relative '../services/game/upgrade_buyer'
 
 # GameScreen is responsible for handling the main gameplay screen
 class GameScreen < BaseScreen
@@ -19,8 +21,8 @@ class GameScreen < BaseScreen
                 :last_update_time, :number_of_followers, :donations_amount, :fade_alpha_warning,
                 :warning_message, :window
 
-  attr_reader :active_conspiracies, :auto_gen_followers_text, :are_followers_auto_generated,
-              :click_x, :click_y
+  attr_reader :active_conspiracies, :active_upgrades, :auto_gen_followers_text, 
+              :are_followers_auto_generated, :click_x, :click_y
 
   def initialize(window)
     super(window)
@@ -41,11 +43,16 @@ class GameScreen < BaseScreen
     when Gosu::KB_ESCAPE then switch_to_intro_screen
     when Gosu::MS_LEFT then handle_left_click
     when Gosu::KB_B then handle_buy_conspiracy
+    when Gosu::KB_U then handle_buy_upgrade
     end
   end
 
   def active_conspiracies_names
-    format_conspiracy_names(@active_conspiracies.map(&:name))
+    format_conspiracy_names @active_conspiracies.map(&:name)
+  end
+
+  def active_upgrades_names
+    format_conspiracy_names(@active_upgrades.map { |u| u[:name] })
   end
 
   def conspiracies_cost
@@ -56,6 +63,7 @@ class GameScreen < BaseScreen
 
   def initialize_game_state
     @active_conspiracies = [Conspiracy.new(id: 1, name: 'The Avocado Agenda', cost: 0)]
+    @active_upgrades = []
     @auto_gen_followers_text = ''
     @last_update_time = Gosu.milliseconds
     @number_of_followers = 0
@@ -99,6 +107,10 @@ class GameScreen < BaseScreen
 
   def handle_buy_conspiracy
     ::Game::ConspiracyBuyer.buy_conspiracy(self)
+  end
+
+  def handle_buy_upgrade
+    ::Game::UpgradeBuyer.buy_upgrade(self)
   end
 
   def format_conspiracy_names(names)
