@@ -4,24 +4,23 @@ require_relative 'base_screen'
 require_relative 'intro_screen'
 require_relative 'conspiracy_description_screen'
 require_relative 'upgrade_description_screen'
-require_relative '../models/conspiracy'
 require_relative '../fixtures/follower_names'
 require_relative '../services/game/draw_manager'
 require_relative '../services/game/update_manager'
 require_relative '../services/game/conspiracy_buyer'
 require_relative '../services/game/upgrade_buyer'
+require_relative '../services/game_window/set_game_state'
 
 # GameScreen is responsible for handling the main gameplay screen
 class GameScreen < BaseScreen
   MINIMUM_FOLLOWERS = 10
-  MAX_FADE = 255
   NEW_FOLLOWER_FADE_START = 250
 
   attr_accessor :fade_alpha_auto_gen, :fade_alpha_new_follower, :latest_follower,
                 :last_update_time, :number_of_followers, :donations_amount, :fade_alpha_warning,
                 :warning_message, :window
 
-  attr_reader :active_conspiracies, :active_upgrades, :auto_gen_followers_text, 
+  attr_reader :active_conspiracies, :active_upgrades, :auto_gen_followers_text,
               :are_followers_auto_generated, :click_x, :click_y
 
   def initialize(window)
@@ -30,12 +29,12 @@ class GameScreen < BaseScreen
   end
 
   def draw
-    ::Game::DrawManager.draw_game_screen(self)
+    ::Game::DrawManager.call(self)
   end
 
   def update
     current_time = Gosu.milliseconds
-    ::Game::UpdateManager.update_game_state(self, current_time)
+    ::Game::UpdateManager.call(self, current_time)
   end
 
   def button_down(id)
@@ -62,20 +61,10 @@ class GameScreen < BaseScreen
   private
 
   def initialize_game_state
-    @active_conspiracies = [Conspiracy.new(id: 1, name: 'The Avocado Agenda', cost: 0)]
-    @active_upgrades = []
-    @auto_gen_followers_text = ''
-    @last_update_time = Gosu.milliseconds
-    @number_of_followers = 0
-    @are_followers_auto_generated = false
-    @fade_alpha_auto_gen = MAX_FADE
-    @fade_alpha_new_follower = NEW_FOLLOWER_FADE_START
-    @fade_alpha_warning = NEW_FOLLOWER_FADE_START
-    @latest_follower = ''
-    @click_x = 0
-    @click_y = 0
-    @donations_amount = 0
-    @warning_message = ''
+    game_state = GameWindow::SetGameState.call
+    game_state.each do |key, value|
+      instance_variable_set("@#{key}", value)
+    end
   end
 
   def switch_to_intro_screen
@@ -106,11 +95,11 @@ class GameScreen < BaseScreen
   end
 
   def handle_buy_conspiracy
-    ::Game::ConspiracyBuyer.buy_conspiracy(self)
+    ::Game::ConspiracyBuyer.call(self)
   end
 
   def handle_buy_upgrade
-    ::Game::UpgradeBuyer.buy_upgrade(self)
+    ::Game::UpgradeBuyer.call(self)
   end
 
   def format_conspiracy_names(names)

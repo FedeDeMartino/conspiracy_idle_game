@@ -5,43 +5,91 @@ require_relative '../../../models/upgrade'
 require_relative '../../../screens/upgrade_description_screen'
 
 RSpec.describe Game::UpgradeBuyer do
-  let(:game_screen) do
-    double('GameScreen', active_upgrades:, donations_amount:, window:)
-  end
+  subject(:service) { described_class.new(game_screen) }
+
   let(:active_upgrades) { [] }
-  let(:upgrade) { { cost: 100, name: 'Flat Earth', id: 1, description: 'Earth flat' } }
-  let(:window) { double('Window', current_screen: nil) }
+  let(:donations_amount) { donations }
+  let(:window) { double('Window') }
+
+  let(:game_screen) do
+    double(
+      'GameScreen',
+      active_upgrades: active_upgrades,
+      donations_amount: donations_amount,
+      window: window,
+      fade_alpha_warning: nil,
+      warning_message: nil
+    )
+  end
+
+  let(:upgrade) do
+    { cost: 100, name: 'Flat Earth', id: 0, description: 'Earth flat' }
+  end
 
   before do
     stub_const('UPGRADES', [upgrade])
-    allow(UpgradeDescriptionScreen).to receive(:new)
-    allow(Game::UpgradeBuyer).to receive(:trigger_warning)
+
+    allow(window).to receive(:current_screen=)
+    allow(game_screen).to receive(:fade_alpha_warning=)
+    allow(game_screen).to receive(:warning_message=)
+
+    allow(UpgradeDescriptionScreen).to receive(:new).and_return(:screen)
   end
 
-  describe '.buy_upgrade' do
+  describe '#call' do
     context 'when there are enough donations' do
-      let(:donations_amount) { 200 }
+      let(:donations) { 200 }
 
-      it 'adds a new upgrade to the active_upgrades list' do
-        expect(game_screen.window).to receive(:current_screen=)
+      it 'adds a new upgrade to the list' do
         expect do
-          Game::UpgradeBuyer.buy_upgrade(game_screen)
-        end.to change { game_screen.active_upgrades.size }.by(1)
+          service.call
+        end.to change { active_upgrades.size }.by(1)
+      end
+
+      it 'pushes the correct upgrade' do
+        service.call
+
+        expect(active_upgrades.last).to eq(upgrade)
+      end
+
+      it 'changes the screen' do
+        expect(window).to receive(:current_screen=).with(:screen)
+
+        service.call
       end
     end
 
     context 'when there are not enough donations' do
-      let(:donations_amount) { 50 }
+      let(:donations) { 50 }
 
-      it 'does not add a new upgrade to the active_upgrades list' do
+      it 'does not add an upgrade' do
         expect do
-          Game::UpgradeBuyer.buy_upgrade(game_screen)
-        end.not_to(change { game_screen.active_upgrades.size })
+          service.call
+        end.not_to(change { active_upgrades.size })
       end
 
-      it 'triggers a warning message' do
-        expect(Game::UpgradeBuyer).to receive(:trigger_warning).with('Not enough donations to buy next upgrade!', game_screen)
-        Game::UpgradeBuyer.buy_upgrade(game_screen)
+      it 'sets warning message and fade' do
+        expect(game_screen).to receive(:fade_alpha_warning=).with(250)
+        expect(game_screen).to receive(:warning_message=)
+          .with('Not enough donations to buy next upgrade!')
+
+        service.call
+      end
+
+      it 'does not change screen' do
+        expect(window).not_to receive(:current_screen=)
+
+        service.call
+      end
+    end
+
+    context 'when there are no upgrades yet' do
+      let(:donations) { 200 }
+
+      it 'picks the first upgrade' do
+        service.call
+
+        expect(active_upgrades.first).to eq(upgrade)
       end
     end
   end

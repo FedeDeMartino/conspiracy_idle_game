@@ -5,43 +5,79 @@ require_relative '../../../models/conspiracy'
 require_relative '../../../screens/conspiracy_description_screen'
 
 RSpec.describe Game::ConspiracyBuyer do
-  let(:game_screen) do
-    double('GameScreen', active_conspiracies:, donations_amount:, window:)
-  end
+  subject(:service) { described_class }
+
+  let(:window) { double('Window') }
   let(:active_conspiracies) { [double('Conspiracy', id: 0)] }
-  let(:conspiracy) { { cost: 100, name: 'Flat Earth', id: 1 } }
-  let(:window) { double('Window', current_screen: nil) }
+  let(:donations_amount) { donations }
+  let(:game_screen) do
+    double(
+      'GameScreen',
+      active_conspiracies: active_conspiracies,
+      donations_amount: donations_amount,
+      window: window,
+      fade_alpha_warning: nil,
+      warning_message: nil
+    )
+  end
+
+  let(:conspiracy_data) { { cost: 100, name: 'Flat Earth', id: 1 } }
+  let(:new_conspiracy) { instance_double(Conspiracy) }
 
   before do
-    stub_const('CONSPIRACIES', [conspiracy])
-    allow(ConspiracyDescriptionScreen).to receive(:new)
-    allow(Game::ConspiracyBuyer).to receive(:trigger_warning)
+    stub_const('CONSPIRACIES', [conspiracy_data])
+
+    allow(Conspiracy).to receive(:new).and_return(new_conspiracy)
+    allow(ConspiracyDescriptionScreen).to receive(:new).and_return(:screen)
+    allow(window).to receive(:current_screen=)
+    allow(game_screen).to receive(:fade_alpha_warning=)
+    allow(game_screen).to receive(:warning_message=)
   end
 
-  describe '.buy_conspiracy' do
+  describe '.call' do
     context 'when there are enough donations' do
-      let(:donations_amount) { 200 }
+      let(:donations) { 200 }
 
-      it 'adds a new conspiracy to the active_conspiracies list' do
-        expect(game_screen.window).to receive(:current_screen=)
+      it 'adds a new conspiracy' do
         expect do
-          Game::ConspiracyBuyer.buy_conspiracy(game_screen)
-        end.to change { game_screen.active_conspiracies.size }.by(1)
+          service.call(game_screen)
+        end.to change { active_conspiracies.size }.by(1)
+      end
+
+      it 'pushes a new Conspiracy instance' do
+        service.call(game_screen)
+
+        expect(active_conspiracies.last).to eq(new_conspiracy)
+      end
+
+      it 'changes the screen' do
+        expect(window).to receive(:current_screen=).with(:screen)
+
+        service.call(game_screen)
       end
     end
 
     context 'when there are not enough donations' do
-      let(:donations_amount) { 50 }
+      let(:donations) { 50 }
 
-      it 'does not add a new conspiracy to the active_conspiracies list' do
+      it 'does not add a conspiracy' do
         expect do
-          Game::ConspiracyBuyer.buy_conspiracy(game_screen)
-        end.not_to(change { game_screen.active_conspiracies.size })
+          service.call(game_screen)
+        end.not_to(change { active_conspiracies.size })
       end
 
-      it 'triggers a warning message' do
-        expect(Game::ConspiracyBuyer).to receive(:trigger_warning).with('Not enough donations to buy next conspiracy!', game_screen)
-        Game::ConspiracyBuyer.buy_conspiracy(game_screen)
+      it 'sets warning message and fade' do
+        expect(game_screen).to receive(:fade_alpha_warning=)
+        expect(game_screen).to receive(:warning_message=)
+          .with('Not enough donations to buy next conspiracy!')
+
+        service.call(game_screen)
+      end
+
+      it 'does not change screen' do
+        expect(window).not_to receive(:current_screen=)
+
+        service.call(game_screen)
       end
     end
   end
